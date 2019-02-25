@@ -113,24 +113,26 @@ void step(float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel
 void ball_update(uint8_t* state, uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) { // pass in the state of the ball (declared globally)
   switch (*state) {
     case 0: //initialize ball (stationary)
+      if (push_count == 0) {
+        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR); //draw ball
+      }
       if (!launch) { // if pushed
         *state = 1; //change state
       }
-      tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR); //draw ball
-    break;    
+    break;
     case 1: // update acceleration
+      tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR); //draw ball
       if (!launch) { // if pushed
         // calculate acceleration
         imu.readAccelData(imu.accelCount);//read imu
         y = -imu.accelCount[0]*imu.aRes;
         x = -imu.accelCount[1]*imu.aRes;
-        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
       } else {
-        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);  
         *state = 2;
       }
     break;
     case 2: // call step() with updated acceleration once released botton
+      tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
       if (push_count < 3){ //making sure no more than 4 ball appears
         push_count++;
       }
@@ -205,11 +207,18 @@ void loop() {
   */
   if (!resetS){ //if pushed
     if(!pushed_last_time){ //if not previously pushed
-      // resetting screen and ball counts and states
+      // resetting screen and ball counts and stats
       tft.fillScreen(BACKGROUND);
       pushed_last_time = true;
       push_count = 0;
       state_1 = state_2 = state_3 = state_4 = 0;
+      x = y = 0;
+      x_pos_1 = x_pos_2 = x_pos_3 = x_pos_4 = 64;
+      y_pos_1 = y_pos_2 = y_pos_3 = y_pos_4 = 80;
+      x_vel_1 = x_vel_2 = x_vel_3 = x_vel_4 = 0;
+      y_vel_1 = y_vel_2 = y_vel_3 = y_vel_4 = 0;
+      x_accel_1 = x_accel_2 = x_accel_3 = x_accel_4 = 0;
+      y_accel_1 = y_accel_2 = y_accel_3 = y_accel_4 = 0;
       run_all_balls(launch);
     }else{
       run_all_balls(launch);
