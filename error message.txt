@@ -1,1 +1,70 @@
-None!
+Arduino: 1.8.8 (Windows 10), Board: "ESP32 Dev Module, Disabled, Default, 13MHz (26MHz XTAL), QIO, 80MHz, 4MB (32Mb), 921600, None"
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void step(float*, float*, float*, float*, float*, float*, float, float)':
+
+Ball_launch:115:42: error: cannot convert 'float**' to 'float*' for argument '1' to 'void moveBall(float*, float*, float*, float*)'
+
+   moveBall(&x_pos, &y_pos, &x_vel, &y_vel);
+
+                                          ^
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void ball_update(uint8_t*, uint8_t*, float*, float*, float*, float*, float*, float*)':
+
+Ball_launch:144:90: error: cannot convert 'float**' to 'float*' for argument '1' to 'void step(float*, float*, float*, float*, float*, float*, float, float)'
+
+       step(&x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel, x*EXCITEMENT, y*EXCITEMENT);//apply force based on last acceleration
+
+                                                                                          ^
+
+Ball_launch:150:62: error: cannot convert 'float**' to 'float*' for argument '1' to 'void step(float*, float*, float*, float*, float*, float*, float, float)'
+
+       step(&x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+
+                                                              ^
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void ball_1(uint8_t, float*, float*, float*, float*, float*, float*)':
+
+Ball_launch:162:85: error: invalid conversion from 'uint8_t {aka unsigned char}' to 'uint8_t* {aka unsigned char*}' [-fpermissive]
+
+     ball_update(&state_1, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+
+                                                                                     ^
+
+Ball_launch:162:85: error: cannot convert 'float**' to 'float*' for argument '3' to 'void ball_update(uint8_t*, uint8_t*, float*, float*, float*, float*, float*, float*)'
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void ball_2(uint8_t, float*, float*, float*, float*, float*, float*)':
+
+Ball_launch:168:85: error: invalid conversion from 'uint8_t {aka unsigned char}' to 'uint8_t* {aka unsigned char*}' [-fpermissive]
+
+     ball_update(&state_2, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+
+                                                                                     ^
+
+Ball_launch:168:85: error: cannot convert 'float**' to 'float*' for argument '3' to 'void ball_update(uint8_t*, uint8_t*, float*, float*, float*, float*, float*, float*)'
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void ball_3(uint8_t, float*, float*, float*, float*, float*, float*)':
+
+Ball_launch:174:85: error: invalid conversion from 'uint8_t {aka unsigned char}' to 'uint8_t* {aka unsigned char*}' [-fpermissive]
+
+     ball_update(&state_3, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+
+                                                                                     ^
+
+Ball_launch:174:85: error: cannot convert 'float**' to 'float*' for argument '3' to 'void ball_update(uint8_t*, uint8_t*, float*, float*, float*, float*, float*, float*)'
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball launch\Ball_launch\Ball_launch.ino: In function 'void ball_4(uint8_t, float*, float*, float*, float*, float*, float*)':
+
+Ball_launch:180:85: error: invalid conversion from 'uint8_t {aka unsigned char}' to 'uint8_t* {aka unsigned char*}' [-fpermissive]
+
+     ball_update(&state_4, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+
+                                                                                     ^
+
+Ball_launch:180:85: error: cannot convert 'float**' to 'float*' for argument '3' to 'void ball_update(uint8_t*, uint8_t*, float*, float*, float*, float*, float*, float*)'
+
+exit status 1
+cannot convert 'float**' to 'float*' for argument '1' to 'void moveBall(float*, float*, float*, float*)'
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences.
