@@ -1,0 +1,86 @@
+Arduino: 1.8.8 (Windows 10), Board: "ESP32 Dev Module, Disabled, Default, 13MHz (26MHz XTAL), QIO, 80MHz, 4MB (32Mb), 921600, None"
+
+Ball_launch:158:23: error: variable or field 'ball_update' declared void
+
+ void ball_update(state) { // pass in the state of the ball (declared globally)
+
+                       ^
+
+Ball_launch:158:18: error: 'state' was not declared in this scope
+
+ void ball_update(state) { // pass in the state of the ball (declared globally)
+
+                  ^
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball_launch\Ball_launch.ino: In function 'void step(float, float)':
+
+Ball_launch:126:3: error: 'x_accel' was not declared in this scope
+
+   x_accel = (x_force-K_FRICTION*x_vel)/MASS;
+
+   ^
+
+Ball_launch:126:33: error: 'x_vel' was not declared in this scope
+
+   x_accel = (x_force-K_FRICTION*x_vel)/MASS;
+
+                                 ^
+
+Ball_launch:127:3: error: 'y_accel' was not declared in this scope
+
+   y_accel = (y_force-K_FRICTION*y_vel)/MASS;
+
+   ^
+
+Ball_launch:127:33: error: 'y_vel' was not declared in this scope
+
+   y_accel = (y_force-K_FRICTION*y_vel)/MASS;
+
+                                 ^
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball_launch\Ball_launch.ino: In function 'void moveBall()':
+
+Ball_launch:135:17: error: 'x_pos' was not declared in this scope
+
+   float nextX = x_pos + 0.001*DT*x_vel;
+
+                 ^
+
+Ball_launch:135:34: error: 'x_vel' was not declared in this scope
+
+   float nextX = x_pos + 0.001*DT*x_vel;
+
+                                  ^
+
+Ball_launch:136:17: error: 'y_pos' was not declared in this scope
+
+   float nextY = y_pos + 0.001*DT*y_vel;
+
+                 ^
+
+Ball_launch:136:34: error: 'y_vel' was not declared in this scope
+
+   float nextY = y_pos + 0.001*DT*y_vel;
+
+                                  ^
+
+D:\Amber\Education\MIT\1st Year\Spring\6.08\Scratch code\Design Exercise\Ball_launch\Ball_launch.ino: At global scope:
+
+Ball_launch:158:23: error: variable or field 'ball_update' declared void
+
+ void ball_update(state) { // pass in the state of the ball (declared globally)
+
+                       ^
+
+Ball_launch:158:18: error: 'state' was not declared in this scope
+
+ void ball_update(state) { // pass in the state of the ball (declared globally)
+
+                  ^
+
+exit status 1
+variable or field 'ball_update' declared void
+
+This report would have more information with
+"Show verbose output during compilation"
+option enabled in File -> Preferences.
