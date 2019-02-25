@@ -112,28 +112,29 @@ void step(float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel
   *x_vel = *x_vel + 0.001*DT*(*x_accel); //integrate, 0.001 is conversion from milliseconds to seconds
   *y_vel = *y_vel + 0.001*DT*(*y_accel); //integrate
   //
-  moveBall(&x_pos, &y_pos, &x_vel, &y_vel);
+  moveBall(x_pos, y_pos, x_vel, y_vel);
 }
 
-void ball_update(uint8_t* state, uint8_t* launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) { // pass in the state of the ball (declared globally)
+void ball_update(uint8_t* state, uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) { // pass in the state of the ball (declared globally)
   switch (*state) {
     case 0: //initialize ball (stationary)
-      if (!*launch) { // if pushed
+      if (!launch) { // if pushed
         *state = 1; //change state
       }
       tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR); //draw ball
     break;    
     case 1: // update acceleration
-      if (!*launch) { // if pushed
+      if (!launch) { // if pushed
         tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
         // calculate acceleration
         imu.readAccelData(imu.accelCount);//read imu
         y = -imu.accelCount[0]*imu.aRes;
         x = -imu.accelCount[1]*imu.aRes;
         tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
-        *state = 2;
+        
       } else {
-        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);        
+        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);     
+        *state = 2;   
       }
     break;
     case 2: // call step() with updated acceleration once released botton
@@ -141,13 +142,13 @@ void ball_update(uint8_t* state, uint8_t* launch, float* x_pos, float* y_pos, fl
       if (push_count < 4){
         push_count++;
       }
-      step(&x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel, x*EXCITEMENT, y*EXCITEMENT);//apply force based on last acceleration
+      step(x_pos, y_pos, x_vel, y_vel, x_accel, y_accel, x*EXCITEMENT, y*EXCITEMENT);//apply force based on last acceleration
       tft.fillCircle(*x_pos,*y_pos,RADIUS,BALL_COLOR);
       *state = 3;
     break;
     case 3: // final state, stop updating accel
       tft.fillCircle(*x_pos,*y_pos,RADIUS,BALL_COLOR);
-      step(&x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+      step(x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
       tft.fillCircle(*x_pos,*y_pos,RADIUS,BALL_COLOR);
     break;
 
@@ -159,25 +160,25 @@ void ball_update(uint8_t* state, uint8_t* launch, float* x_pos, float* y_pos, fl
 
 void ball_1(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
   if (push_count == 0) {
-    ball_update(&state_1, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+    ball_update(&state_1, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
 
 void ball_2(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
   if (push_count == 1) {
-    ball_update(&state_2, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+    ball_update(&state_2, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
 
 void ball_3(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
   if (push_count == 2) {
-    ball_update(&state_3, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+    ball_update(&state_3, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
 
 void ball_4(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
   if (push_count == 3) {
-    ball_update(&state_4, launch, &x_pos, &y_pos, &x_vel, &y_vel, &x_accel, &y_accel);
+    ball_update(&state_4, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
 
