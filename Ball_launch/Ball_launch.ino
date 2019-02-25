@@ -2,7 +2,6 @@
 #include <SPI.h> //Used in support of TFT Display
 #include <string.h>  //used for some string handling and processing.
 #include <mpu9255_esp32.h>
-// #include <math.h>
 
 TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
  
@@ -10,14 +9,15 @@ TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 #define BALL_COLOR TFT_BLUE
  
 const int DT = 40; //milliseconds
-const int EXCITEMENT = 2000; //how much force to apply to ball
-const uint8_t input_pin1 = 16; // apply force
+const int EXCITEMENT = 5000; //how much force to apply to ball
+
+const uint8_t input_pin1 = 16; // launch ball
 const uint8_t input_pin2 = 5; // reset screen
 uint8_t launch = digitalRead(input_pin1);
 uint8_t resetS = digitalRead(input_pin2);
 
-bool pushed_last_time; //for finding change of button (using bool type...same as uint8_t)
-uint8_t push_count;
+bool pushed_last_time; //for finding change of button
+uint8_t push_count; // to keep track of balls on screen
 
 uint32_t primary_timer; //main loop timer
  
@@ -33,18 +33,13 @@ const int RIGHT_LIMIT = 127-RADIUS; //right side of screen limit
 const int TOP_LIMIT = RADIUS; //top of screen limit
 const int BOTTOM_LIMIT = 159-RADIUS; //bottom of screen limit
 
-float x;
+float x; // to save imu data
 float y;
 
 //state variables:
 // default values
 const float x_pos_d = 64; //x position
 const float y_pos_d = 80; //y position
-const float x_vel_d = 0; //x velocity
-const float y_vel_d = 0;  //y velocity
-const float x_accel_d = 0; //x acceleration
-const float y_accel_d = 0; //y acceleration
-const uint8_t state_default = 0;
 // ball 1
 float x_pos_1 = 64;
 float y_pos_1 = 80;
@@ -125,21 +120,18 @@ void ball_update(uint8_t* state, uint8_t launch, float* x_pos, float* y_pos, flo
     break;    
     case 1: // update acceleration
       if (!launch) { // if pushed
-        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
         // calculate acceleration
         imu.readAccelData(imu.accelCount);//read imu
         y = -imu.accelCount[0]*imu.aRes;
         x = -imu.accelCount[1]*imu.aRes;
         tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
-        
       } else {
-        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);     
-        *state = 2;   
+        tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);  
+        *state = 2;
       }
     break;
     case 2: // call step() with updated acceleration once released botton
-      tft.fillCircle(x_pos_d,y_pos_d,RADIUS,BALL_COLOR);
-      if (push_count < 4){
+      if (push_count < 3){ //making sure no more than 4 ball appears
         push_count++;
       }
       step(x_pos, y_pos, x_vel, y_vel, x_accel, y_accel, x*EXCITEMENT, y*EXCITEMENT);//apply force based on last acceleration
@@ -147,11 +139,9 @@ void ball_update(uint8_t* state, uint8_t launch, float* x_pos, float* y_pos, flo
       *state = 3;
     break;
     case 3: // final state, stop updating accel
-      tft.fillCircle(*x_pos,*y_pos,RADIUS,BALL_COLOR);
-      step(x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
+      step(x_pos, y_pos, x_vel, y_vel, x_accel, y_accel); // no force applies anymore      
       tft.fillCircle(*x_pos,*y_pos,RADIUS,BALL_COLOR);
     break;
-
     default: // handling unexpected behavior
       Serial.println("state machine not working");
     break;
@@ -159,32 +149,29 @@ void ball_update(uint8_t* state, uint8_t launch, float* x_pos, float* y_pos, flo
 }
 
 void ball_1(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
-  if (push_count == 0) {
+  if (push_count >= 0) {
     ball_update(&state_1, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
-
 void ball_2(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
-  if (push_count == 1) {
+  if (push_count >= 1) {
     ball_update(&state_2, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
-
 void ball_3(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
-  if (push_count == 2) {
+  if (push_count >= 2) {
     ball_update(&state_3, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
-
 void ball_4(uint8_t launch, float* x_pos, float* y_pos, float* x_vel, float* y_vel, float* x_accel, float* y_accel) {
-  if (push_count == 3) {
+  if (push_count >= 3) {
     ball_update(&state_4, launch, x_pos, y_pos, x_vel, y_vel, x_accel, y_accel);
   }
 }
-
 void run_all_balls(uint8_t launch) {
-  ball_1(launch, &x_pos_1, &y_pos_1, &x_vel_1, &y_vel_1, &x_accel_1, &y_accel_1);
-  ball_2(launch, &x_pos_2, &y_pos_2, &x_vel_2, &y_vel_2, &x_accel_2, &y_accel_2);
+  tft.fillScreen(BACKGROUND);
+  ball_1(launch, &x_pos_1, &y_pos_1, &x_vel_1, &y_vel_1, &x_accel_1, &y_accel_1);  
+  ball_2(launch, &x_pos_2, &y_pos_2, &x_vel_2, &y_vel_2, &x_accel_2, &y_accel_2);  
   ball_3(launch, &x_pos_3, &y_pos_3, &x_vel_3, &y_vel_3, &x_accel_3, &y_accel_3);
   ball_4(launch, &x_pos_4, &y_pos_4, &x_vel_4, &y_vel_4, &x_accel_4, &y_accel_4);
 }
@@ -214,13 +201,15 @@ void loop() {
   resetS = digitalRead(input_pin2);
 
   /*state machine for resettting
-  once pushed, before even release, will reset the program
+  once pushed, will reset the program
   */
   if (!resetS){ //if pushed
     if(!pushed_last_time){ //if not previously pushed
+      // resetting screen and ball counts and states
+      tft.fillScreen(BACKGROUND);
       pushed_last_time = true;
       push_count = 0;
-      state_1 = state_2 = state_3 = state_4 = state_default;
+      state_1 = state_2 = state_3 = state_4 = 0;
       run_all_balls(launch);
     }else{
       run_all_balls(launch);
